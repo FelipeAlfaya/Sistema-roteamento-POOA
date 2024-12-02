@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import br.com.ucsal.annotations.Rota;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -40,7 +41,13 @@ public class ProdutoController extends HttpServlet {
         }
     }
 
-	
+    @Rota("/listar")
+    public void listarProdutos(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.getWriter().write("Lista de produtos");
+    }
 
-
+    @Rota("/adicionar")
+    public void adicionarProduto(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.getWriter().write("Produto adicionado");
+    }
 }
