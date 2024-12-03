@@ -1,49 +1,60 @@
 package br.com.ucsal.controller;
 
-
-
 import java.io.IOException;
 
-import br.com.ucsal.persistencia.HSQLProdutoRepository;
-import br.com.ucsal.service.ProdutoService;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import br.com.ucsal.service.ProdutoService;
+import br.com.ucsal.util.Injector;
 
+@WebServlet("/adicionarProduto")
 public class ProdutoAdicionarServlet implements Command {
- private static final long serialVersionUID = 1L;
- 
- private ProdutoService produtoService;
 
- public ProdutoAdicionarServlet() {
-     // Inicializa o serviço com o repositório
-     this.produtoService = new ProdutoService(new HSQLProdutoRepository());
- }
+    private ProdutoService produtoService;
 
- @Override
- public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-     String method = request.getMethod();
-     
-     if ("GET".equalsIgnoreCase(method)) {
-         doGet(request, response);
-     } else if ("POST".equalsIgnoreCase(method)) {
-         doPost(request, response);
-     }
- }
+    public ProdutoAdicionarServlet() {
+        this.produtoService = Injector.createProdutoService();
+    }
 
- private void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	 RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/produtoformulario.jsp");
-     dispatcher.forward(request, response);
- }
+    @Override
+    public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String method = request.getMethod();
 
- private void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-     String nome = request.getParameter("nome");
-     double preco = Double.parseDouble(request.getParameter("preco"));
-     produtoService.adicionarProduto(nome, preco);
-     response.sendRedirect("listarProdutos");
- }
+        if ("GET".equalsIgnoreCase(method)) {
+            doGet(request, response);
+        } else if ("POST".equalsIgnoreCase(method)) {
+            doPost(request, response);
+        }
+    }
 
+    private void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // Redireciona para o formulário JSP para adicionar um produto
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/produtoformulario.jsp");
+        dispatcher.forward(request, response);
+    }
+
+    private void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String nome = request.getParameter("nome");
+        String precoStr = request.getParameter("preco");
+
+        // Validação simples
+        if (nome == null || nome.isEmpty() || precoStr == null || precoStr.isEmpty()) {
+            request.setAttribute("erro", "Nome e preço são obrigatórios!");
+            request.getRequestDispatcher("/WEB-INF/views/produtoformulario.jsp").forward(request, response);
+            return;
+        }
+
+        try {
+            double preco = Double.parseDouble(precoStr);
+            produtoService.adicionarProduto(nome, preco);
+            response.sendRedirect("listarProdutos");
+        } catch (NumberFormatException e) {
+            request.setAttribute("erro", "Preço inválido!");
+            request.getRequestDispatcher("/WEB-INF/views/produtoformulario.jsp").forward(request, response);
+        }
+    }
 }
-

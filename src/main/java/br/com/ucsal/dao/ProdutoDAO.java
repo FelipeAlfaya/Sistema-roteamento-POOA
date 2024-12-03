@@ -30,7 +30,6 @@ public class ProdutoDAO {
         produtos.add(produto);
     }
 
-    // Método para atualizar um produto
     public static void atualizar(Produto produto) {
         Produto produtoExistente = buscarPorId(produto.getId());
         if (produtoExistente != null) {
@@ -39,7 +38,6 @@ public class ProdutoDAO {
         }
     }
 
-    // Método para excluir um produto
     public static void excluir(int id) {
         Produto produto = buscarPorId(id);
         if (produto != null) {

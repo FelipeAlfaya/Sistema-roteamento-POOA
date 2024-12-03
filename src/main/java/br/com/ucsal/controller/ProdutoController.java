@@ -4,14 +4,14 @@ import java.io.IOException;
 import java.util.List;
 
 import br.com.ucsal.model.Produto;
-import br.com.ucsal.dao.ProdutoDAO;  // Supondo que você tenha uma classe DAO para manipulação de produtos
+import br.com.ucsal.dao.ProdutoDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/view/*")  // Mapeia todas as requisições com "/view/*"
+@WebServlet("/view/*")
 public class ProdutoController extends HttpServlet {
 
     @Override
@@ -54,7 +54,6 @@ public class ProdutoController extends HttpServlet {
         request.getRequestDispatcher("/WEB-INF/views/formProduto.jsp").forward(request, response);
     }
 
-    // Exibe o formulário para editar um produto
     private void editarProduto(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String id = request.getParameter("id");
         Produto produto = ProdutoDAO.buscarPorId(Integer.parseInt(id));  // Supondo que ProdutoDAO tenha esse método
@@ -62,7 +61,6 @@ public class ProdutoController extends HttpServlet {
         request.getRequestDispatcher("/WEB-INF/views/formProduto.jsp").forward(request, response);
     }
 
-    // Processa a adição de um novo produto
     private void adicionarProduto(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String nome = request.getParameter("nome");
         double preco = Double.parseDouble(request.getParameter("preco"));
