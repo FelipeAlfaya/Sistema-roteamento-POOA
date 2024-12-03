@@ -23,6 +23,21 @@
 			<artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
 			<version>3.0.2</version>
 		</dependency>
+
+		<dependency>
+			<groupId>jakarta.el</groupId>
+			<artifactId>jakarta.el-api</artifactId>
+			<version>5.0.0</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>jakarta.servlet</groupId>
+			<artifactId>jakarta.servlet-api</artifactId>
+			<version>6.0.0</version>
+			<scope>provided</scope>
+		</dependency>
+
 		<!-- Implementação do JSTL -->
 		<dependency>
 		    <groupId>org.glassfish.web</groupId>
@@ -39,6 +54,7 @@
 
 	<build>
 		<plugins>
+			<!-- Maven Compiler Plugin -->
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.13.0</version>
@@ -46,9 +62,31 @@
 					<release>21</release>
 				</configuration>
 			</plugin>
+
+			<!-- Maven WAR Plugin -->
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
 				<version>3.4.0</version>
+			</plugin>
+
+			<!-- Cargo Plugin -->
+			<plugin>
+				<groupId>org.codehaus.cargo</groupId>
+				<artifactId>cargo-maven3-plugin</artifactId>
+				<version>1.9.9</version>
+				<configuration>
+					<container>
+						<containerId>tomcat10x</containerId>
+						<type>installed</type>
+						<home>C:\Users\felip\Downloads\apache-tomcat-9.0.97</home>
+					</container>
+					<configuration>
+						<type>standalone</type>
+						<properties>
+							<cargo.servlet.port>8080</cargo.servlet.port>
+						</properties>
+					</configuration>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
