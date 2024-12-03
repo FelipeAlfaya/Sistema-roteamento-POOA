@@ -26,13 +26,10 @@ public class ProdutoListarServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Obtém a lista de produtos
         List<Produto> produtos = produtoService.listarProdutos();
 
-        // Define a lista de produtos como atributo da requisição
         request.setAttribute("produtos", produtos);
 
-        // Encaminha para a página JSP dentro de WEB-INF
         request.getRequestDispatcher("/WEB-INF/views/produtolista.jsp").forward(request, response);
     }
 }

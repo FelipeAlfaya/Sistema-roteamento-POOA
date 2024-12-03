@@ -11,6 +11,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+@WebServlet("/editarProduto")
 public class ProdutoEditarServlet implements Command {
     private static final long serialVersionUID = 1L;
 
@@ -20,11 +21,10 @@ public class ProdutoEditarServlet implements Command {
         this.produtoService = new ProdutoService(new HSQLProdutoRepository());
     }
 
-
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String method = request.getMethod();
-        
+
         if ("GET".equalsIgnoreCase(method)) {
             doGet(request, response);
         } else if ("POST".equalsIgnoreCase(method)) {
@@ -33,21 +33,30 @@ public class ProdutoEditarServlet implements Command {
     }
 
     private void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Integer id = Integer.parseInt(request.getParameter("id"));
-        Produto produto = produtoService.obterProdutoPorId(id);
-        request.setAttribute("produto", produto);
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/produtoformulario.jsp");
-        dispatcher.forward(request, response);
+        try {
+            Integer id = Integer.parseInt(request.getParameter("id"));
+            Produto produto = produtoService.obterProdutoPorId(id);
+            request.setAttribute("produto", produto);
+
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/produtoformulario.jsp");
+            dispatcher.forward(request, response);
+        } catch (NumberFormatException e) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID inválido.");
+        }
     }
 
     private void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Integer id = Integer.parseInt(request.getParameter("id"));
-        String nome = request.getParameter("nome");
-        double preco = Double.parseDouble(request.getParameter("preco"));
-        Produto produto = new Produto(id, nome, preco);
-        produtoService.atualizarProduto(produto);
-        response.sendRedirect("listarProdutos");
+        try {
+            Integer id = Integer.parseInt(request.getParameter("id"));
+            String nome = request.getParameter("nome");
+            double preco = Double.parseDouble(request.getParameter("preco"));
+
+            Produto produto = new Produto(id, nome, preco);
+            produtoService.atualizarProduto(produto);
+
+            response.sendRedirect("listarProdutos");
+        } catch (NumberFormatException e) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Dados inválidos.");
+        }
     }
-
 }
-

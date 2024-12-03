@@ -14,6 +14,12 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet("/view/*")
 public class ProdutoController extends HttpServlet {
 
+    private ProdutoDAO produtoDAO;
+
+    public ProdutoController() {
+        this.produtoDAO = ProdutoDAO.getInstance();
+    }
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String path = request.getPathInfo();
@@ -42,21 +48,19 @@ public class ProdutoController extends HttpServlet {
         }
     }
 
-    // Exibe a lista de produtos
     private void listarProdutos(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<Produto> produtos = ProdutoDAO.listarTodos();  // Supondo que ProdutoDAO tenha esse método
+        List<Produto> produtos = produtoDAO.listarTodos();
         request.setAttribute("produtos", produtos);
         request.getRequestDispatcher("/WEB-INF/views/listarProdutos.jsp").forward(request, response);
     }
 
-    // Exibe o formulário para adicionar um novo produto
     private void adicionarProdutoForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.getRequestDispatcher("/WEB-INF/views/formProduto.jsp").forward(request, response);
     }
 
     private void editarProduto(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String id = request.getParameter("id");
-        Produto produto = ProdutoDAO.buscarPorId(Integer.parseInt(id));  // Supondo que ProdutoDAO tenha esse método
+        Produto produto = produtoDAO.buscarPorId(Integer.parseInt(id));
         request.setAttribute("produto", produto);
         request.getRequestDispatcher("/WEB-INF/views/formProduto.jsp").forward(request, response);
     }
@@ -66,7 +70,7 @@ public class ProdutoController extends HttpServlet {
         double preco = Double.parseDouble(request.getParameter("preco"));
 
         Produto produto = new Produto(nome, preco);
-        ProdutoDAO.adicionar(produto);
+        produtoDAO.adicionar(produto);
 
         response.sendRedirect(request.getContextPath() + "/view/listarProdutos");
     }
@@ -77,7 +81,7 @@ public class ProdutoController extends HttpServlet {
         double preco = Double.parseDouble(request.getParameter("preco"));
 
         Produto produto = new Produto(Integer.parseInt(id), nome, preco);
-        ProdutoDAO.atualizar(produto);
+        produtoDAO.atualizar(produto);
 
         response.sendRedirect(request.getContextPath() + "/view/listarProdutos");
     }

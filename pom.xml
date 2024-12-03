@@ -76,7 +76,7 @@
 				<version>1.9.9</version>
 				<configuration>
 					<container>
-						<containerId>tomcat10x</containerId>
+						<containerId>tomcat9x</containerId>
 						<type>installed</type>
 						<home>C:\Users\felip\Downloads\apache-tomcat-9.0.97</home>
 					</container>
